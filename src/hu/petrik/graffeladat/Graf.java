@@ -1,6 +1,6 @@
 package hu.petrik.graffeladat;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Irányítatlan, egyszeres gráf.
@@ -57,7 +57,122 @@ public class Graf {
         elek.add(new El(cs1, cs2));
         elek.add(new El(cs2, cs1));
     }
+    public void szelessegiBejaras(int start){
 
+        List<Integer> alreadyLooked = new ArrayList<>();
+        Queue<Integer> nextOnes = new LinkedList<>();
+
+        nextOnes.add(start);
+        alreadyLooked.add(start);
+
+        while (nextOnes.size() > 0) {
+            var k = nextOnes.poll();
+            System.out.println(this.csucsok.get(k));
+            for (var el : this.elek) {
+                if (el.getCsucs1() == k && !alreadyLooked.contains(el.getCsucs2())) {
+                    nextOnes.add(el.getCsucs2());
+                    alreadyLooked.add(el.getCsucs2());
+                }
+            }
+        }
+    }
+    
+//    public void melysegiBejaras(int start){
+//        List<Integer> alreadyLooked = new ArrayList<>();
+//        Stack<Integer> nextOnes = new Stack<>();
+//
+//        nextOnes.add(start);
+//        alreadyLooked.add(start);
+//
+//        while (nextOnes.size() > 0) {
+//            var k = nextOnes.pop();
+//            System.out.println(this.csucsok.get(k));
+//            for (var el : this.elek) {
+//                if (el.getCsucs1() == k && !alreadyLooked.contains(el.getCsucs2())) {
+//                    nextOnes.add(el.getCsucs2());
+//                    alreadyLooked.add(el.getCsucs2());
+//                }
+//            }
+//        }
+//    }
+
+    public void melysegiBejar2(int start){
+        List<Integer> alreadyLooked = new ArrayList<>();
+        alreadyLooked.add(start);
+        this.melysegiBejarRekurziv(start,alreadyLooked);
+
+    }
+    public void melysegiBejarRekurziv(int k, List<Integer> alreadyLooked){
+        System.out.println(this.csucsok.get(k));
+        for (El el: elek) {
+            if (el.getCsucs1()==k&&!(alreadyLooked.contains(el.getCsucs2()))){
+                alreadyLooked.add(el.getCsucs2());
+                melysegiBejarRekurziv(el.getCsucs2(),alreadyLooked);
+            }
+        }
+    }
+    public boolean osszefuggosegEldontese(){
+        List<Integer> alreadyLooked = new ArrayList<>();
+        Queue<Integer> nextOnes = new LinkedList<>();
+
+        nextOnes.add(0);
+        alreadyLooked.add(0);
+
+        while (nextOnes.size() > 0) {
+            var k = nextOnes.poll();
+            for (var el : this.elek) {
+                if (el.getCsucs1() == k && !alreadyLooked.contains(el.getCsucs2())) {
+                    nextOnes.add(el.getCsucs2());
+                    alreadyLooked.add(el.getCsucs2());
+                }
+            }
+        }
+        return alreadyLooked.size() == this.csucsokSzama;
+    }
+    
+    public Graf feszitofaKeszitese(){
+        Graf fa = new Graf(this.csucsokSzama);
+        List<Integer> alreadyLooked = new ArrayList<>();
+        Queue<Integer> nextOnes = new LinkedList<>();
+
+        nextOnes.add(0);
+        alreadyLooked.add(0);
+
+        while (nextOnes.size() > 0) {
+            var k = nextOnes.poll();
+            for (var el : this.elek) {
+                if (el.getCsucs1() == k && !alreadyLooked.contains(el.getCsucs2())) {
+                    nextOnes.add(el.getCsucs1());
+                    alreadyLooked.add(el.getCsucs2());
+                    fa.hozzaad(el.getCsucs1(), el.getCsucs2());
+                }
+            }
+        }
+        return fa;
+    }
+    
+    public HashMap csucsSzinezesMohoAlgoritmussal(){
+        var colouring = new HashMap<Integer, Integer>();
+        var maxColour = this.csucsokSzama;
+
+        for (int i = 0; i < this.csucsokSzama; i++) {
+            List<Integer> colourOptions = new ArrayList<>();
+            for (int j = 0; j < maxColour; j++) {
+                colourOptions.add(j);
+            }
+
+            for (var el : this.elek) {
+               if (el.getCsucs1() == this.csucsok.get(i).getId() && colouring.containsKey(el.getCsucs2())) {
+                    var szin = colouring.get(el.getCsucs2());
+                    colourOptions.remove(szin);
+                }
+            }
+            var selectedColour = Collections.min(colourOptions);
+            colouring.put(i, selectedColour);
+        }
+        return colouring;
+    }
+    
     @Override
     public String toString() {
         String str = "Csucsok:\n";

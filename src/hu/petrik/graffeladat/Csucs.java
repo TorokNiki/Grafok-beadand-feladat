@@ -18,6 +18,10 @@ class Csucs {
         this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return Integer.toString(this.id);

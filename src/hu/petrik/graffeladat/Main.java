@@ -13,5 +13,17 @@ public class Main {
         graf.hozzaad(2, 4);
         
         System.out.println(graf);
+        graf.szelessegiBejaras(2);
+//        System.out.println();
+//        graf.melysegiBejaras(4);
+        System.out.println();
+        graf.melysegiBejar2(4);
+        System.out.println();
+        graf.osszefuggosegEldontese();
+        System.out.println();
+        graf.feszitofaKeszitese();
+        System.out.println();
+        graf.csucsSzinezesMohoAlgoritmussal();
+
     }
 }
